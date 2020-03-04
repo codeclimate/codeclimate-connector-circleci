@@ -6,18 +6,25 @@ import {
 } from "codeclimate-connector-sdk/lib/TestHelpers"
 
 import { Client } from "../Client"
+import { DiscoverStreams } from "../DiscoverStreams"
+
+jest.mock("../DiscoverStreams")
 
 describe(Client, () => {
+  function buildClient(): Client {
+    return new Client(
+      new Map([
+        ["apiToken", "fake-key"],
+      ]),
+      buildFakeRecordProducer(),
+      buildFakeStateManager(),
+      buildFakeLogger(),
+    )
+  }
+
   describe("verifyConfiguration", () => {
     test.skip("says valid config is valid", () => {
-      const client = new Client(
-        new Map([
-          // TODO - your config keys go here
-        ]),
-        buildFakeRecordProducer(),
-        buildFakeStateManager(),
-        buildFakeLogger(),
-      )
+      const client = buildClient()
 
       return client.verifyConfiguration().then((result) => {
         expect(result.isValid).toBe(true)
@@ -40,16 +47,29 @@ describe(Client, () => {
     })
   })
 
+  describe("discoverStreams", () => {
+    test("it calls the relevant runner", () => {
+      const client = buildClient();
+
+      (DiscoverStreams as any).mockImplementation(() => {
+        return {
+          run: () => Promise.resolve()
+        }
+      })
+
+      return client.discoverStreams().then(() => {
+        const mock = (DiscoverStreams as any).mock
+        expect(mock.calls.length).toBe(1)
+        expect(mock.calls[0]).toEqual([
+          client.configuration, client.recordProducer, client.logger
+        ])
+      })
+    })
+  })
+
   describe("syncStream", () => {
     test.skip("it syncs", () => {
-      const client = new Client(
-        new Map([
-          // TODO - your config keys go here
-        ]),
-        buildFakeRecordProducer(),
-        buildFakeStateManager(),
-        buildFakeLogger(),
-      )
+      const client = buildClient()
 
       const stream = new Stream({
         type: "Stream",

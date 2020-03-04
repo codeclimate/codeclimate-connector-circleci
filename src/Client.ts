@@ -5,6 +5,8 @@ import {
   VerifyConfigurationResult,
 } from "codeclimate-connector-sdk"
 
+import { DiscoverStreams } from "./DiscoverStreams"
+
 export class Client extends AbstractClient implements ClientInterface {
   verifyConfiguration(): Promise<VerifyConfigurationResult> {
     this.logger.debug("TODO - implement verifyConfiguration")
@@ -12,8 +14,13 @@ export class Client extends AbstractClient implements ClientInterface {
   }
 
   discoverStreams(): Promise<void> {
-    this.logger.debug(`TODO - implement discoverStreams.`)
-    return Promise.resolve()
+    const runner = new DiscoverStreams(
+      this.configuration,
+      this.recordProducer,
+      this.logger,
+    )
+
+    return runner.run()
   }
 
   syncStream(stream: Stream, earliestDataCutoff: Date): Promise<void> {

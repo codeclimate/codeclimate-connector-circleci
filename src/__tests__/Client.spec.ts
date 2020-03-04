@@ -7,8 +7,10 @@ import {
 
 import { Client } from "../Client"
 import { DiscoverStreams } from "../DiscoverStreams"
+import { VerifyConfiguration } from "../VerifyConfiguration"
 
 jest.mock("../DiscoverStreams")
+jest.mock("../VerifyConfiguration")
 
 describe(Client, () => {
   function buildClient(): Client {
@@ -23,39 +25,34 @@ describe(Client, () => {
   }
 
   describe("verifyConfiguration", () => {
-    test.skip("says valid config is valid", () => {
+    test("it calls the verifier", () => {
+      (VerifyConfiguration as any).mockImplementation(() => {
+        return {
+          run: () => Promise.resolve()
+        }
+      })
+
       const client = buildClient()
 
-      return client.verifyConfiguration().then((result) => {
-        expect(result.isValid).toBe(true)
-      })
-    })
-
-    test.skip("says invalid config invalid, with errors", () => {
-      const client = new Client(
-        new Map(),
-        buildFakeRecordProducer(),
-        buildFakeStateManager(),
-        buildFakeLogger(),
-      )
-
-      return client.verifyConfiguration().then((result) => {
-        expect(result.isValid).toBe(false)
-        expect(result.errorMessages).toBeDefined()
-        expect(result.errorMessages!.length).toBeGreaterThan(0)
+      return client.verifyConfiguration().then(() => {
+        const mock = (VerifyConfiguration as any).mock
+        expect(mock.calls.length).toBe(1)
+        expect(mock.calls[0]).toEqual([
+          client.configuration, client.logger
+        ])
       })
     })
   })
 
   describe("discoverStreams", () => {
     test("it calls the relevant runner", () => {
-      const client = buildClient();
-
       (DiscoverStreams as any).mockImplementation(() => {
         return {
           run: () => Promise.resolve()
         }
       })
+
+      const client = buildClient()
 
       return client.discoverStreams().then(() => {
         const mock = (DiscoverStreams as any).mock

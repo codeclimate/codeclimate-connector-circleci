@@ -6,11 +6,13 @@ import {
 } from "codeclimate-connector-sdk"
 
 import { DiscoverStreams } from "./DiscoverStreams"
+import { VerifyConfiguration } from "./VerifyConfiguration"
 
 export class Client extends AbstractClient implements ClientInterface {
   verifyConfiguration(): Promise<VerifyConfigurationResult> {
-    this.logger.debug("TODO - implement verifyConfiguration")
-    return Promise.resolve({ isValid: true })
+    const verifier = new VerifyConfiguration(this.configuration, this.logger)
+
+    return verifier.run()
   }
 
   discoverStreams(): Promise<void> {

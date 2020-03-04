@@ -7,9 +7,11 @@ import {
 
 import { Client } from "../Client"
 import { DiscoverStreams } from "../DiscoverStreams"
+import { SyncStream } from "../SyncStream"
 import { VerifyConfiguration } from "../VerifyConfiguration"
 
 jest.mock("../DiscoverStreams")
+jest.mock("../SyncStream")
 jest.mock("../VerifyConfiguration")
 
 describe(Client, () => {
@@ -66,21 +68,28 @@ describe(Client, () => {
 
   describe("syncStream", () => {
     test.skip("it syncs", () => {
+      (SyncStream as any).mockImplementation(() => {
+        return {
+          run: () => Promise.resolve()
+        }
+      })
+
       const client = buildClient()
 
       const stream = new Stream({
-        type: "Stream",
-        attributes: {
-          id: "your-id-here",
-          self: "http://example.com/your-uri-here",
-          name: "your-name-here",
-        }
+        _type: "Stream",
+        id: "gh/owner/repo",
+        self: "https://github.com/owner/repo",
+        name: "owner/repo"
       })
-      const dateCutoff = new Date(new Date().valueOf() - 1_000_000)
+      const cutoff = new Date()
 
-      return client.syncStream(stream, dateCutoff).then((_result) => {
-        // TODO - check that `client.manager.sentMessages` contains what you
-        // expect
+      return client.syncStream(stream, cutoff).then(() => {
+        const mock = (SyncStream as any).mock
+        expect(mock.calls.length).toBe(1)
+        expect(mock.calls[0]).toEqual([
+          client.configuration, stream, client.recordProducer, client.stateManager, client.logger, cutoff
+        ])
       })
     })
   })

@@ -6,6 +6,7 @@ import {
 } from "codeclimate-connector-sdk"
 
 import { DiscoverStreams } from "./DiscoverStreams"
+import { SyncStream } from "./SyncStream"
 import { VerifyConfiguration } from "./VerifyConfiguration"
 
 export class Client extends AbstractClient implements ClientInterface {
@@ -26,7 +27,15 @@ export class Client extends AbstractClient implements ClientInterface {
   }
 
   syncStream(stream: Stream, earliestDataCutoff: Date): Promise<void> {
-    this.logger.debug(`TODO - implement syncStream. Got ${stream.id}, ${earliestDataCutoff}`)
-    return Promise.resolve()
+    const syncer = new SyncStream(
+      this.configuration,
+      stream,
+      this.recordProducer,
+      this.stateManager,
+      this.logger,
+      earliestDataCutoff,
+    )
+
+    return syncer.run()
   }
 }

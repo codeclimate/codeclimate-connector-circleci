@@ -791,9 +791,9 @@ co@^4.6.0:
   integrity sha1-bqa989hTrlTMuOR7+gvz+QMfsYQ=
 
 codeclimate-connector-sdk@~0.0:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/codeclimate-connector-sdk/-/codeclimate-connector-sdk-0.0.2.tgz#6bb1f7e259161c53a3168b804c573beaab51c8c6"
-  integrity sha512-bK1zATpvKV9F0EUCNC1ifANo0p2V8lrEudZi7iQcf2aEWb66w9eCsfMKws8ugIPn8AJmed6YARTWEn4tVl8+HA==
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/codeclimate-connector-sdk/-/codeclimate-connector-sdk-0.0.3.tgz#285035c4165fd8fc6cf6f470e8ac3f4a5786ff3b"
+  integrity sha512-5D2MAAk1MjhVOTJt0WVQbyBPoU7tv8fH0e6tx+WV9CbjoZiLqMLtbQCQttEK6yDZ/tpJE7igq1rdasifZN6Dtw==
   dependencies:
     ajv "^6.11.0"
     yargs-parser "^17.0.0"

@@ -1,25 +1,42 @@
-# Code Climate Connector: circleci
+# Code Climate Connector: CircleCI
 
-TODO - describe your connector here
+A Code Climate Connector for [CircleCI](https://circleci.com).
 
 ## Configuration
 
-TODO - describe the configuration your connector uses here.
+Expects configuration of the following schema:
+
+```json
+{
+  "apiToken": "your_api_token"
+}
+```
+
+If you are logged in to your CircleCI account, visit
+https://circleci.com/account/api to create a token.
 
 ## Running the connector locally
 
 To run the connector in an integration environment, the
 [`codeclimate-connector-sdk`][sdk] provides a CLI you can use.
 
-1. Write valid configuration to `connector-config.json`.
-2. To ensure the project's current code has been compiled into `./lib` for
-   execution, run `yarn build`.
-3. Then, to run a sync, run the following (replace `YYYY-MM-DD` with the date
-   you want to sync back to):
+First write valid configuration to `connector-config.json`. Then, there are
+several make rules to run different commands easily:
 
-    ```
-    yarn run codeclimate-connector sync-stream circleci connector-config.json stream-json-or-null YYYY-MM-DD
-    ```
+```
+# Run this to check the correctness of your connector-config.json
+
+make verify-configuration
+# Run this to list your CirclCI projects as Streams
+make discover-streams
+
+# Run this to sync data from one of your projects. Write the contents of one of
+# the Stream records emitted by discover-streams to stream.json
+make sync-stream
+```
 
 [sdk]: https://github.com/codeclimate/codeclimate-connector-sdk
 
+## Development
+
+See [`DEVELOPERS.md`](DEVELOPERS.md)

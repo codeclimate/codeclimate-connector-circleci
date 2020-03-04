@@ -25,8 +25,8 @@ several make rules to run different commands easily:
 
 ```
 # Run this to check the correctness of your connector-config.json
-
 make verify-configuration
+
 # Run this to list your CirclCI projects as Streams
 make discover-streams
 
